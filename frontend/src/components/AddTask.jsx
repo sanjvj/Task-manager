@@ -28,8 +28,12 @@ const AddTask = () => {
       <button 
         className='bg-yellow-300 text-black py-2 px-4 rounded hover:bg-yellow-400' 
         onClick={async () => {
-          await axios.post("http://localhost:3000/api/v1/task/newtask", { title, description });
-          navigate('/');
+          await axios.post("http://localhost:3000/api/v1/task/newtask", { title, description },{
+            headers:{
+              Authorization: "Bearer "+localStorage.getItem("token")
+            }
+          });
+          navigate('/home');
         }}
       >
         Add new task

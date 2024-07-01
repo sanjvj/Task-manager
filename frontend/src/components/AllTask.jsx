@@ -7,21 +7,32 @@ const AllTask = () => {
   const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
-    const fetchTasks = async () => {
-      try {
-        const result = await axios.get("http://localhost:3000/api/v1/task/alltask");
-        setTasks(result.data);
-      } catch (err) {
-        console.error(err);
+    let config = {
+      method: 'get',
+      maxBodyLength: Infinity,
+      url: 'http://localhost:3000/api/v1/task/alltask',
+      headers: { 
+        'Authorization': 'Bearer '+localStorage.getItem("token")
       }
     };
-
-    fetchTasks();
+    
+    axios.request(config)
+    .then((response) => {
+      const tasks = response.data;
+      setTasks(tasks);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
   }, []);
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:3000/api/v1/task/delete/${id}`);
+      await axios.delete(`http://localhost:3000/api/v1/task/delete/${id}`,{
+        headers:{
+          Authorization: "Bearer "+localStorage.getItem("token") 
+        }
+      });
       setTasks(tasks.filter(task => task._id !== id));
     } catch (error) {
       console.error('Error deleting task:', error);
@@ -30,7 +41,11 @@ const AllTask = () => {
 
   const handleToggleDone = async (id, done) => {
     try {
-      await axios.put(`http://localhost:3000/api/v1/task/update/${id}`, { done: !done });
+      await axios.put(`http://localhost:3000/api/v1/task/update/${id}`, { done: !done },{
+        headers: {
+          "Authorization": "Bearer "+localStorage.getItem("token")
+        }
+      });
       const updatedTasks = tasks.map(task => {
         if (task._id === id) {
           return { ...task, done: !done };
