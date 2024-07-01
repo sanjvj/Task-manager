@@ -7,23 +7,13 @@ mongoose.connect("mongodb+srv://sanjay3012:Sanjaysurya07@cluster0.pvif7.mongodb.
 });
 
 
-
-
 const taskSchema = new mongoose.Schema({
-    title : {
-        type : String,
-        required : true
-    },
-    description : {
-        type : String,
-        required : true
-    },
-    done : {
-        type : Boolean,
-        default : false
-    }
-})
+    title: { type: String, required: true },
+    description: { type: String, required: true },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    done: { type: Boolean, default: false }
+});
 
+const Task = mongoose.model('Task', taskSchema);
 
-const Task = mongoose.model("tasks",taskSchema)
-module.exports = Task;
+module.exports = { Task };
