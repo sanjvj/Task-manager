@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Sidebar from './Sidebar';
 
 const AddTask = () => {
   const [title, setTitle] = useState("");
@@ -21,6 +22,7 @@ const AddTask = () => {
   };
 
   return (
+    
     <div className='max-w-md mx-auto bg-white text-gray-800 p-8 rounded shadow mt-10'>
       <h2 className='text-2xl font-bold mb-6'>Add New Task</h2>
       <div className='mb-4'>

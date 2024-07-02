@@ -36,21 +36,24 @@ const AllTask = () => {
   };
 
   return (
-    <div className="bg-white text-gray-800 min-h-screen p-6">
-      <h2 className="text-2xl font-bold mb-4">Not completed:</h2>
+    <div className="text-gray-800 min-h-screen">
+      <h2 className="max-w-4xl ml-6 mt-6 text-start font-normal text-2xl  text-black mb-2 md:text-xl lg:text-2xl">Your Tasks</h2>
       {tasks.filter(task => !task.done).length === 0 ? (
         <div><h3>No tasks found</h3></div>
       ) : (
-        <div className="flex flex-wrap gap-5">
+        <div className="flex flex-wrap gap-5 mt-2 ml-6">
           {tasks.filter(task => !task.done).map(task => (
-            <div key={task._id} className="w-80 bg-gray-100 rounded p-4 shadow">
-              <MdCheckBoxOutlineBlank className="text-yellow-300" />
-              <h3 className="font-bold">{task.title}</h3>
-              <p className="truncate">{task.description}</p>
+            <div key={task._id} className="w-80 p-4 bg-white border-2 border-gray-200 shadow-md rounded-md">
+             <div className='flex justify-between'>
+             <div> 
+              <h3 className="font-medium text-lg tracking-normal">{task.title}</h3>
+              <p className="truncate font-light text-sm">{task.description}</p>
+              </div>
               <MdDelete
                 onClick={() => handleDelete(task._id)}
                 className="cursor-pointer mt-2 text-red-500"
               />
+             </div>
             </div>
           ))}
         </div>
