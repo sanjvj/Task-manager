@@ -1,12 +1,17 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useSetRecoilState } from "recoil";
+import { firstNameState, lastNameState } from "../store/atoms/state";
 
 const SignInForm = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState(""); // State for error message
+  
+  const setFirstName = useSetRecoilState(firstNameState);
+  const setLastName = useSetRecoilState(lastNameState);
 
   const handleSignin = async (e) => {
     e.preventDefault(); // Prevent default form submission
@@ -15,7 +20,15 @@ const SignInForm = () => {
         username,
         password,
       });
-      localStorage.setItem("token", response.data.token);
+
+      localStorage.setItem("token", response.data.token); // Store JWT token
+      setFirstName(response.data.firstName); // Set first name in Recoil state
+      setLastName(response.data.lastName); // Set last name in Recoil state
+
+      // Store first name and last name in local storage
+      localStorage.setItem("firstName", response.data.firstName);
+      localStorage.setItem("lastName", response.data.lastName);
+
       navigate("/home");
     } catch (error) {
       console.error("There was an error signing in!", error.response ? error.response.data : error.message);

@@ -1,6 +1,9 @@
+// pages/Signup.jsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useSetRecoilState } from "recoil";
+import { firstNameState, lastNameState } from "../store/atoms/state";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -8,7 +11,10 @@ const Signup = () => {
   const [lastName, setLastName] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState(""); 
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const setFirstNameState = useSetRecoilState(firstNameState);
+  const setLastNameState = useSetRecoilState(lastNameState);
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -20,14 +26,18 @@ const Signup = () => {
         password,
       });
 
-      localStorage.setItem("token", response.data.token); // Store JWT in local storage
+      localStorage.setItem("token", response.data.token);
+      
+      setFirstNameState(firstName); // Update Recoil state
+      setLastNameState(lastName); // Update Recoil state
+      localStorage.setItem("firstName",firstName);
+      localStorage.setItem("lastName",lastName);
       navigate("/home");
     } catch (error) {
       console.error("There was an error signing up!", error.response ? error.response.data : error.message);
       // Set the error message to display to the user
       const message = error.response ? error.response.data.msg : error.message;
       setErrorMessage(message);
-      console.log("Error messsage"+errorMessage);
     }
   };
 
@@ -43,6 +53,7 @@ const Signup = () => {
                 {errorMessage}
               </div>
             )}
+            
             <form className="space-y-4">
               <div>
                 <label

@@ -5,6 +5,7 @@ const zod = require("zod");
 const User = require("../db1");
 const bcrypt = require('bcryptjs');
 const jwt = require("jsonwebtoken");
+const authMiddleware = require("../middleware");
 
 const signupSchema = zod.object({
     username: zod.string().email(),
@@ -66,19 +67,27 @@ router.post("/signin", async (req, res) => {
     }
 
     const existingUser = await User.findOne({ username: req.body.username });
+    
     if (!existingUser) {
         return res.status(411).json({ msg: "No username available. Please check your email or signup" });
     }
 
     const isMatch = await bcrypt.compare(req.body.password, existingUser.password);
     if (isMatch) {
+        const firstName = existingUser.firstName;
+        const lastName = existingUser.lastName;
         const token = jwt.sign({ userId: existingUser._id }, process.env.ACCESS_TOKEN_SECRET);
         req.session.token = token; // Store token in session
-        return res.status(200).json({ token: token });
+        return res.status(200).json({ token: token,
+            firstName : firstName,
+            lastName : lastName
+         });
     } else {
         return res.status(411).json({ msg: "You have entered wrong password" });
     }
 });
+
+
 
 
 

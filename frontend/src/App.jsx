@@ -1,26 +1,44 @@
-import { useState } from 'react'
-import { Route,Routes,BrowserRouter } from 'react-router-dom'
-import './App.css'
-import Home from './pages/Home'
-import Add from './pages/Add'
-import Signup from './pages/Signup';
-import SignInForm from './pages/Signin';
+// App.js
+import React, { useEffect } from "react";
+import { RecoilRoot } from "recoil";
+import RecoilStateInitializer from "./components/RecoilStateInitializer";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Signup from "./pages/Signup";
+import Login from "./pages/Signin";
+import Home from "./pages/Home";
+import Add from "./pages/Add";
+import ProtectedRoute from "./ProtectedRoute";
 
-function App() {
-
-
+const App = () => {
   return (
-    <>
-      <BrowserRouter>
-        <Routes>
-          <Route path='/' element={<SignInForm></SignInForm>}></Route>
-          <Route path='/signup' element={<Signup></Signup>}></Route>
-          <Route path='home' element={<Home></Home>}></Route>
-          <Route path='/task' element={<Add></Add>}></Route>   
-        </Routes>
-      </BrowserRouter>
-    </>
-  )
-}
+    <RecoilRoot>
+      <RecoilStateInitializer>
+        <Router>
+          <Routes>
+            <Route path="/" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
 
-export default App
+            <Route
+              path="/home"
+              element={
+                <ProtectedRoute>
+                  <Home />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/task"
+              element={
+                <ProtectedRoute>
+                  <Add></Add>
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+        </Router>
+      </RecoilStateInitializer>
+    </RecoilRoot>
+  );
+};
+
+export default App;
