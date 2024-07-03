@@ -28,10 +28,10 @@ const Heading = () => {
   return (
     <div>
     
-      <h1 className='max-w-4xl ml-6 mt-6 text-start font-normal text-2xl  text-black mb-2 md:text-xl lg:text-2xl'>{greeting()}, {firstName}!</h1>
+      <h1 className='max-w-4xl ml-6 mt-6 text-start font-normal text-2xl tracking-tight text-black mb-2 md:text-xl lg:text-2xl'>{greeting()}, {firstName}!</h1>
       <p className='ml-7 text-start font-normal text-gray-600 mb-5'>It's {currentDate()}</p>
       <Overview></Overview>
-      </div>
+      </div>                                                              
     
   );
 };

@@ -1,76 +1,118 @@
 const express = require("express");
 const router = express.Router();
 const zod = require("zod");
-const { Task } = require("../db");  // Correct import of Task model
+const { Task } = require("../db"); // Correct import of Task model
 const authMiddleware = require("../middleware");
+const { findByIdAndDelete } = require("../db1");
 
 const taskSchema = zod.object({
-    title: zod.string(),
-    description: zod.string()
+  title: zod.string(),
+  description: zod.string(),
 });
 
 router.get("/alltask", authMiddleware, async (req, res) => {
+  try {
+    const tasks = await Task.find(
+      { userId: req.userId },
+      "title description dueDate"
+    );
+    res.json(tasks);
+  } catch (error) {
+    res.status(500).json({ msg: "Error fetching tasks", error: error.message });
+  }
+});
+
+router.get("/edit/:id",authMiddleware,async(req,res)=>{
+    const task = await Task.findById(req.params.id,"title description dueDate");
+    res.json(task);
+})
+
+router.put('/edit/:id', authMiddleware, async (req, res) => {
+    const { title, description, dueDate } = req.body;
     try {
-        const tasks = await Task.find({ userId: req.userId }, 'title description');
-        res.json(tasks);
+      const task = await Task.findByIdAndUpdate(
+        req.params.id,
+        { title, description, dueDate },
+        { new: true } // Return the updated task
+      );
+      
+      // If the task is not found, send a 404 response
+      if (!task) {
+        return res.status(404).json({ message: 'Task not found' });
+      }
+  
+      // Send the updated task as a JSON response
+      res.json(task);
     } catch (error) {
-        res.status(500).json({ msg: "Error fetching tasks", error: error.message });
+      console.error('Error updating task:', error);
+      res.status(500).json({ message: 'Server error' });
     }
+  });
+
+router.get("/numberoftasks", authMiddleware, async (req, res) => {
+  try {
+    const totaltask = await Task.countDocuments({ userId: req.userId });
+    const completedtask = await Task.countDocuments({
+      userId: req.userID,
+      done: true,
+    });
+    res.json({
+      totaltask,
+      completedtask,
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ msg: "Error fetching number of tasks", error: error.message });
+  }
 });
 
 router.post("/newtask", authMiddleware, async (req, res) => {
-    const body = req.body;
-    const { success } = taskSchema.safeParse(body);
-    if (!success) {
-        return res.status(400).json({ msg: "Invalid inputs" });
-    }
-
+  const body = req.body;
+  const { success } = taskSchema.safeParse(body);
+  if (!success) {
+    return res.status(400).json({ msg: "Invalid inputs" });
+  }
+  const title = req.body.title;
+  const description = req.body.description;
+  const userId = req.userId;
+  const dueDate = req.body.dueDate;
+  if (title && description && userId && dueDate) {
     try {
-        const newTask = await Task.create({
-            title: req.body.title,
-            description: req.body.description,
-            userId: req.userId
-        });
-        const taskId = newTask._id;
+      const newTask = await Task.create({
+        title,
+        description,
+        userId,
+        dueDate,
+      });
+      const taskId = newTask._id;
 
-        res.json({ msg: "New task created successfully", taskId: taskId });
+      res.json({ msg: "New task created successfully", taskId: taskId });
     } catch (error) {
-        res.status(500).json({ msg: "Error creating new task", error: error.message });
+      res
+        .status(500)
+        .json({ msg: "Error creating new task", error: error.message });
     }
+  }else{
+    res.status(411).json({
+        msg:"Fill all the inputs"
+    })
+  }
 });
 
-router.put('/update/:id', authMiddleware, async (req, res) => {
-    const { id } = req.params;
-    try {
-        const task = await Task.findOne({ _id: id, userId: req.userId });
 
-        if (!task) {
-            return res.status(404).send({ msg: 'Task not found' });
-        }
-
-        // Toggle the done status
-        task.done = !task.done;
-
-        const updatedTask = await task.save();
-
-        res.status(200).send({ message: 'Task updated successfully', updatedTask });
-    } catch (error) {
-        console.error('Error updating task:', error);
-        res.status(500).send({ message: 'Error updating task', error });
-    }
-});
 
 router.delete('/delete/:id', authMiddleware, async (req, res) => {
-    const { id } = req.params;
-    try {
-        const deletedTask = await Task.findOneAndDelete({ _id: id, userId: req.userId });
-        if (!deletedTask) {
-            return res.status(404).send({ msg: 'Task not found' });
-        }
-        res.status(200).send({ message: 'Task deleted successfully' });
-    } catch (error) {
-        res.status(500).send({ message: 'Error deleting task', error });
-    }
+  const { id } = req.params;
+  try {
+      const deletedTask = await Task.findOneAndDelete({ _id: id, userId: req.userId });
+      if (!deletedTask) {
+          return res.status(404).send({ msg: 'Task not found' });
+      }
+      res.status(200).send({ message: 'Task deleted successfully' });
+  } catch (error) {
+      res.status(500).send({ message: 'Error deleting task', error });
+  }
 });
 
 module.exports = router;

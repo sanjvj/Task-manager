@@ -1,7 +1,29 @@
-import React from "react";
+import React,{useState,useEffect} from "react";
 import { PiLineVerticalBold } from "react-icons/pi";
+import axios from "axios";
+
+
 const Overview = () => {
+  const [count,setCount] = useState(0);
+  const [completedtaskcount,setCompletedTaskCount] = useState(0);
+  useEffect(()=>{
+    fetchTasks();
+  },[])
+  const fetchTasks = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/api/v1/task/numberoftasks', {
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem("token")
+        }
+      });
+      setCount(response.data.totaltask);
+      setCompletedTaskCount(response.data.completedtask);
+    } catch (error) {
+      console.error('Error fetching tasks:', error);
+    }
+  };
   return (
+    
     <div>
       <h1 className="max-w-4xl ml-6 mt-6 text-start font-normal text-2xl  text-black mb-2 md:text-xl lg:text-2xl">
         Overview
@@ -12,7 +34,7 @@ const Overview = () => {
           <div className="flex flex-col gep-0 p-0 m-0">
             <h1 className="text-md font-medium">Total project</h1>
             <p className=" text-sm font-normal text-zinc-800">All</p>
-            <h1 className="text-4xl font-medium mt-3">10</h1>
+            <h1 className="text-4xl font-medium mt-3">{count}</h1>
           </div>
         </div>
         <div className="flex">
@@ -20,7 +42,7 @@ const Overview = () => {
           <div className="flex flex-col gep-0 p-0 m-0">
             <h1 className="text-md font-medium">Completed</h1>
             <p className=" text-sm font-normal text-zinc-800">All</p>
-            <h1 className="text-4xl font-medium mt-3">3</h1>
+            <h1 className="text-4xl font-medium mt-3">{completedtaskcount}</h1>
           </div>
         </div>
         <div className="flex">
@@ -28,7 +50,7 @@ const Overview = () => {
           <div className="flex flex-col gep-0 p-0 m-0">
             <h1 className="text-md font-medium">Not Completed</h1>
             <p className=" text-sm font-normal text-zinc-800">All</p>
-            <h1 className="text-4xl font-medium mt-3">7</h1>
+            <h1 className="text-4xl font-medium mt-3">{count-completedtaskcount}</h1>
           </div>
         </div>
         <div className="flex">

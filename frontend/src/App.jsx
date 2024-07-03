@@ -8,6 +8,8 @@ import Login from "./pages/Signin";
 import Home from "./pages/Home";
 import Add from "./pages/Add";
 import ProtectedRoute from "./ProtectedRoute";
+import './App.css'
+import EditTask from "./components/EditTask";
 
 const App = () => {
   return (
@@ -31,6 +33,14 @@ const App = () => {
               element={
                 <ProtectedRoute>
                   <Add></Add>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/edit/:id"
+              element={
+                <ProtectedRoute>
+                  <EditTask></EditTask>
                 </ProtectedRoute>
               }
             />
