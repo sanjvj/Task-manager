@@ -41,11 +41,7 @@ const AddTaskModal = ({ onSubmit, onCancel,errorMessage }) => {
     <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
       <div className=" w-[500px] h-[500px] backdrop-blur-3xl backdrop-brightness-50 p-8 rounded-lg shadow-lg">
         <h2 className="text-2xl font-bold mb-10 text-white">Add New Task</h2>
-        {errorMessage && (
-              <div className="mb-4 text-md font-bold text-red-400 ml-7">
-                {errorMessage}
-              </div>
-        )}
+        
         <form onSubmit={handleSubmit} className="max-w-xs mx-auto">
           {/* Title */}
           <div className="mb-6 relative">
