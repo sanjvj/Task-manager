@@ -1,17 +1,21 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import { IoCalendarOutline } from 'react-icons/io5';
-import { MdDelete } from 'react-icons/md';
+
+import TaskCard from "./TaskCard";
+import ConfirmationDialog from "./ConfirmationDialog";
+import EditTaskModal from "./EditTaskModal";
+import AddTaskModal from "./AddTaskModal";
 
 const AllTask = () => {
   const [tasks, setTasks] = useState([]);
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const [taskToDelete, setTaskToDelete] = useState(null); // Track task to delete
-  const navigate = useNavigate();
+  const [taskToDelete, setTaskToDelete] = useState(null);
+  const [editingTask, setEditingTask] = useState(null);
+  const [showAddTaskModal, setShowAddTaskModal] = useState(false); // State for AddTask modal
+  const [errorMessage, setErrorMessage] = useState(""); 
 
   useEffect(() => {
-    fetchTasks(); // Initial fetch when component mounts
+    fetchTasks();
   }, []);
 
   const fetchTasks = async () => {
@@ -31,36 +35,31 @@ const AllTask = () => {
   };
 
   const handleDelete = async (id) => {
-    try {
-      // Set the task to delete and show confirmation modal
-      setTaskToDelete(id);
-      setShowConfirmation(true);
-    } catch (error) {
-      console.error("Error preparing to delete task:", error);
-    }
+    setTaskToDelete(id);
+    setShowConfirmation(true);
   };
 
   const confirmDelete = async () => {
     try {
-      // Perform delete operation
-      await axios.delete(`http://localhost:3000/api/v1/task/delete/${taskToDelete}`, {
-        headers: {
-          Authorization: "Bearer " + localStorage.getItem("token"),
-        },
-      });
-
-      // Update tasks state to reflect the deleted task
-      setTasks((prevTasks) => prevTasks.filter((task) => task._id !== taskToDelete));
-
-      // Close confirmation modal
+      await axios.delete(
+        `http://localhost:3000/api/v1/task/delete/${taskToDelete}`,
+        {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        }
+      );
+      setTasks((prevTasks) =>
+        prevTasks.filter((task) => task._id !== taskToDelete)
+      );
       setShowConfirmation(false);
+      setTaskToDelete(null);
     } catch (error) {
       console.error("Error deleting task:", error);
     }
   };
 
   const cancelDelete = () => {
-    // Reset state and close confirmation modal
     setTaskToDelete(null);
     setShowConfirmation(false);
   };
@@ -87,86 +86,116 @@ const AllTask = () => {
     return `${month} ${date}`;
   };
 
-  const navigateToEdit = (id) => {
-    navigate(`/edit/${id}`);
+  const handleEditClick = (task) => {
+    setEditingTask(task);
+  };
+
+  const handleEditChange = (e) => {
+    const { name, value } = e.target;
+    setEditingTask((prevTask) => ({
+      ...prevTask,
+      [name]: value,
+    }));
+  };
+
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.put(
+        `http://localhost:3000/api/v1/task/edit/${editingTask._id}`,
+        editingTask,
+        {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        }
+      );
+      setTasks((prevTasks) =>
+        prevTasks.map((task) =>
+          task._id === editingTask._id ? editingTask : task
+        )
+      );
+      setEditingTask(null);
+    } catch (error) {
+      console.error("Error updating task:", error);
+    }
+  };
+
+  const handleEditCancel = () => {
+    setEditingTask(null);
+  };
+
+  const handleAddTask = () => {
+    setShowAddTaskModal(true);
+  };
+
+  const handleAddTaskSubmit = async (taskData) => {
+    try {
+      await axios.post(
+        'http://localhost:3000/api/v1/task/newtask',
+        taskData,
+        {
+          headers: {
+            Authorization: 'Bearer ' + localStorage.getItem('token')
+          }
+        }
+      );
+      fetchTasks(); // Refresh tasks after adding
+      setShowAddTaskModal(false);
+    } catch (error) {
+      console.error("Error adding Task", error.response ? error.response.data : error.message);
+      // Set the error message to display to the user
+      setErrorMessage(error.response ? error.response.data.msg : error.message);
+    }
+  };
+
+  const handleAddTaskCancel = () => {
+    setShowAddTaskModal(false);
   };
 
   return (
-    <div className="text-gray-800 min-h-screen">
-      <h2 className="max-w-4xl ml-6 mt-6 text-start font-normal text-2xl text-black mb-2 md:text-xl lg:text-2xl">
-        Your Tasks
-      </h2>
-      {tasks.filter((task) => !task.done).length === 0 ? (
-        <div>
-          <h3 className="ml-6 mt-20">No tasks found</h3>
-        </div>
-      ) : (
-        <div key={tasks.length} className="flex flex-wrap gap-5 mt-2 ml-6">
-          {tasks
-            .filter((task) => !task.done)
-            .map((task) => (
-              <div
-                key={task._id}
-                onClick={() => navigateToEdit(task._id)}
-                className="w-96 p-4 bg-white border-2 border-gray-200 shadow-md rounded-md hover:cursor-pointer hover:-translate-y-0.5 duration-300 hover:scale-105 relative"
-              >
-                <div className="flex justify-between">
-                  <div className="w-full">
-                    <div className="flex justify-between">
-                      <div className="flex gap-1">
-                        <IoCalendarOutline size={20} />
-                        <p className="font-bold text-gray-500 text-sm">
-                          {dateOfTask(task.dueDate)}
-                        </p>
-                      </div>
-                      <p className="font-bold text-gray-500 text-sm">
-                        {calculateDaysRemaining(task.dueDate)}
-                      </p>
-                    </div>
-                    <h3 className="truncate-multiline font-medium text-lg tracking-normal mt-2">
-                      {task.title}
-                    </h3>
-                    <p className="truncate-multiline text-sm">
-                      {task.description}
-                    </p>
-                  </div>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation(); // Prevent click from propagating to parent div
-                      handleDelete(task._id);
-                    }}
-                    className="absolute bottom-2 right-4 text-red-500 hover:text-red-600"
-                  >
-                    <MdDelete size={20} />
-                  </button>
-                </div>
-              </div>
-            ))}
-        </div>
-      )}
-
-      {/* Confirmation Modal */}
+    <div className="flex flex-col p-4 mt-4">
+      <div className="flex justify-between items-center mb-8 mr-10">
+        <h2 className="text-2xl font-bold">All Tasks</h2>
+        <button
+          className="bg-black hover:bg-gray-800 shadow-lg shadow-black text-white font-semibold px-4 py-2 rounded"
+          onClick={handleAddTask} // Open AddTask modal
+        >
+          Add Task
+        </button>
+      </div>
+      <div className="flex flex-wrap gap-4 justify-start">
+        {tasks.map((task) => (
+          <TaskCard
+            key={task._id}
+            task={task}
+            onEditClick={handleEditClick}
+            onDeleteClick={handleDelete}
+            calculateDaysRemaining={calculateDaysRemaining}
+            dateOfTask={dateOfTask}
+          />
+        ))}
+      </div>
       {showConfirmation && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
-          <div className="bg-white p-4 rounded-lg shadow-lg text-center">
-            <p className="text-lg font-semibold">Confirm Deletion</p>
-            <p className="text-gray-700 mt-2">Are you sure you want to delete this task?</p>
-            <div className="mt-4 flex justify-center">
-              <button
-                onClick={confirmDelete}
-                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 mr-4 rounded"
-              >
-                Delete
-              </button>
-              <button
-                onClick={cancelDelete}
-                className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
+        <ConfirmationDialog
+          onConfirm={confirmDelete}
+          onCancel={cancelDelete}
+        />
+      )}
+      {editingTask && (
+        <EditTaskModal
+          task={editingTask}
+          onChange={handleEditChange}
+          onSubmit={handleEditSubmit}
+          onCancel={handleEditCancel}
+        />
+      )}
+      {showAddTaskModal && (
+        <AddTaskModal
+          onSubmit={handleAddTaskSubmit}
+          onCancel={handleAddTaskCancel}
+          errorMessage={errorMessage}
+        />
       )}
     </div>
   );

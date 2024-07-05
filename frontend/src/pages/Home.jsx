@@ -12,7 +12,6 @@ const Home = () => {
       <Sidebar />
       <div className='ml-10 md:ml-64 flex flex-col gap-5 p-5 w-full'>
         <Heading />
-        <AllTask />
       </div>
     </div>
   );

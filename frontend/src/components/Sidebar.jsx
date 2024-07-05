@@ -7,10 +7,10 @@ import { FaTasks } from "react-icons/fa";
 import { MdOutlineNotificationImportant } from "react-icons/md";
 import { MdOutlineAnalytics } from "react-icons/md";
 import {  CgAdd, CgAddR } from "react-icons/cg";
+import { SiTicktick } from "react-icons/si";
 const Sidebar = () => {
   const navigate = useNavigate();
-  const firstName = useRecoilValue(firstNameState);
-  const lastName = useRecoilValue(lastNameState);
+  
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -29,16 +29,16 @@ const Sidebar = () => {
       </div>
       <div className="flex flex-col mt-16 gap-2">
         <button onClick={() => navigate("/home")} className="flex gap-3 text-start text-zinc-200 hover:bg-neutral-500 py-2 px-4 rounded-md transition duration-500">
-          <><RxDashboard className="mt-1"/> Home</>
+          <><RxDashboard className="mt-1"/> Dashboard</>
         </button>
-        <button onClick={() => navigate("/completed")} className="flex gap-3 text-start text-zinc-200 hover:bg-neutral-500 py-2 px-4 rounded-md transition duration-500">
-          <><FaTasks className="mt-1"/> Completed</>
+        <button onClick={() => navigate("/alltask")} className="flex gap-3 text-start text-zinc-200 hover:bg-neutral-500 py-2 px-4 rounded-md transition duration-500">
+          <><FaTasks className="mt-1"/> Tasks</>
         </button>
         <button onClick={() => navigate("/important")} className="flex gap-3 text-start text-zinc-200 hover:bg-neutral-500 py-2 px-4 rounded-md transition duration-500">
-          <><MdOutlineNotificationImportant className="mt-1"/> Important</>
+          <><SiTicktick stroke="1" className="mt-1"/> Completed</>
         </button>
         <button onClick={() => navigate("/analytics")} className="flex gap-3 text-start text-zinc-200 hover:bg-neutral-500 py-2 px-4 rounded-md transition duration-500">
-          <><MdOutlineAnalytics className="mt-1"/> Analytics</>
+          <><MdOutlineNotificationImportant className="mt-1"/> Important</>
         </button>
 
        

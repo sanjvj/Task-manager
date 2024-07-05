@@ -6,10 +6,11 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Signup from "./pages/Signup";
 import Login from "./pages/Signin";
 import Home from "./pages/Home";
-import Add from "./pages/Add";
+
 import ProtectedRoute from "./ProtectedRoute";
 import './App.css'
-import EditTask from "./components/EditTask";
+import Tasks from "./pages/Tasks";
+
 
 const App = () => {
   return (
@@ -28,19 +29,12 @@ const App = () => {
                 </ProtectedRoute>
               }
             />
+               
             <Route
-              path="/task"
+              path="/alltask"
               element={
                 <ProtectedRoute>
-                  <Add></Add>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/edit/:id"
-              element={
-                <ProtectedRoute>
-                  <EditTask></EditTask>
+                  <Tasks></Tasks>
                 </ProtectedRoute>
               }
             />

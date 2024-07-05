@@ -7,3 +7,50 @@
   text-overflow: ellipsis;
 }
 
+/* Custom styles for floating labels */
+input:focus ~ label,
+textarea:focus ~ label,
+select:focus ~ label,
+.datepicker-container:focus-within ~ label {
+  -top: -2.5rem;
+  -left: 0.75rem;
+  -font-size: 0.75rem;
+  -color: #3b82f6;
+}
+
+input:not(:focus):valid ~ label,
+textarea:not(:focus):valid ~ label,
+select:not(:focus):valid ~ label,
+.datepicker-container:not(:focus-within) ~ label {
+  -top: -2.5rem;
+  -left: 0.75rem;
+  -font-size: 0.75rem;
+  -color: #6b7280;
+}
+
+input,
+textarea,
+select {
+  -border-bottom-width: 1px;
+  -border-bottom-color: #d1d5db;
+}
+
+/* Global styles */
+input,
+textarea,
+select,
+button {
+  -padding: 0.75rem 1rem;
+  -font-size: 0.875rem;
+  -line-height: 1.25rem;
+  -border-width: 1px;
+  -border-radius: 0.25rem;
+}
+
+button:hover {
+  -filter: brightness(0.9);
+}
+
+button:focus {
+  -outline: none;
+}
