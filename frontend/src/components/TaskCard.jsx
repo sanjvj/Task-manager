@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import { IoCalendarOutline } from 'react-icons/io5';
-import { MdClass, MdDelete } from 'react-icons/md';
-import { FaCheckCircle, FaRegCircle } from "react-icons/fa";
-import { useNavigate } from 'react-router-dom';
-import { markTaskAsDone } from './TaskActions'; // Ensure correct import
+import { MdDelete } from 'react-icons/md';
+import { FaCheckCircle, FaRegCircle } from 'react-icons/fa';
+import { markTaskAsDone } from './TaskActions';
 
 const TaskCard = ({ task, onEditClick, onDeleteClick, calculateDaysRemaining, dateOfTask, setTasks, setErrorMessage }) => {
   const [isHovered, setIsHovered] = useState(false);
-  const navigate = useNavigate();
 
   const handleMarkAsDone = async () => {
     try {
@@ -37,7 +35,11 @@ const TaskCard = ({ task, onEditClick, onDeleteClick, calculateDaysRemaining, da
               onClick={handleMarkAsDone} // Ensure correct onClick handler
               className='inline-block'
             >
-              {isHovered ? <FaCheckCircle size={20} color='green'></FaCheckCircle> : <FaRegCircle size={20}></FaRegCircle>}
+              {task.done ? (
+                <FaCheckCircle size={20} color='green' />
+              ) : (
+                isHovered ? <FaCheckCircle size={20} color='green' /> : <FaRegCircle size={20} />
+              )}
             </div>
             <div onClick={() => onEditClick(task)}>
               <h3 className="truncate-multiline font-medium text-lg tracking-normal">{task.title}</h3>

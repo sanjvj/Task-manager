@@ -106,7 +106,7 @@ router.patch('/mark-done/:id', async (req, res) => {
   const { id } = req.params;
 
   try {
-      const updatedTask = await Task.findByIdAndUpdate(id, { done: true }, { new: true });
+      const updatedTask = await Task.findByIdAndUpdate(id, { done: true });
       res.json(updatedTask);
   } catch (err) {
       console.error('Error marking task as done:', err);

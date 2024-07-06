@@ -1,28 +1,28 @@
 // App.js
-import React, { useEffect } from "react";
-import { RecoilRoot } from "recoil";
-import RecoilStateInitializer from "./components/RecoilStateInitializer";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Signup from "./pages/Signup";
-import Login from "./pages/Signin";
-import Home from "./pages/Home";
-
-import ProtectedRoute from "./ProtectedRoute";
-import "./App.css";
-import Tasks from "./pages/Tasks";
-import PendingTasks from "./pages/PendingTasks";
-import CompletedTasks from "./pages/CompletedTasks";
-import ImportantTasks from "./pages/ImportantTasks";
+import React from 'react';
+import { RecoilRoot } from 'recoil';
+import RecoilStateInitializer from './components/RecoilStateInitializer';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Signup from './pages/Signup';
+import Login from './pages/Signin';
+import Home from './pages/Home';
+import ProtectedRoute from './ProtectedRoute';
+import './App.css';
+import Tasks from './pages/Tasks';
+import PendingTasks from './pages/PendingTasks';
+import CompletedTasks from './pages/CompletedTasks';
+import ImportantTasks from './pages/ImportantTasks';
+import ProgressBar from './components/ProgressBar'; // Import ProgressBar component
 
 const App = () => {
   return (
     <RecoilRoot>
       <RecoilStateInitializer>
         <Router>
+          <ProgressBar /> {/* Render progress bar component */}
           <Routes>
             <Route path="/" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
-
             <Route
               path="/home"
               element={
@@ -31,30 +31,27 @@ const App = () => {
                 </ProtectedRoute>
               }
             />
-
             <Route
               path="/alltask"
               element={
                 <ProtectedRoute>
-                  <Tasks></Tasks>
+                  <Tasks />
                 </ProtectedRoute>
               }
             />
-
             <Route
               path="/pending"
               element={
                 <ProtectedRoute>
-                  <PendingTasks></PendingTasks>
+                  <PendingTasks />
                 </ProtectedRoute>
               }
             />
-
             <Route
               path="/completed"
               element={
                 <ProtectedRoute>
-                  <CompletedTasks></CompletedTasks>
+                  <CompletedTasks />
                 </ProtectedRoute>
               }
             />
@@ -62,7 +59,7 @@ const App = () => {
               path="/important"
               element={
                 <ProtectedRoute>
-                  <ImportantTasks></ImportantTasks>
+                  <ImportantTasks />
                 </ProtectedRoute>
               }
             />

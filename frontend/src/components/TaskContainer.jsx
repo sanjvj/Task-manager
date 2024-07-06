@@ -18,7 +18,7 @@ const TaskContainer = ({ title, fetchUrl }) => {
   const [editingTask, setEditingTask] = useState(null);
   const [showAddTaskModal, setShowAddTaskModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-
+  const [loading,setLoading] = useState(false);
   const fetchTasks = useCallback(() => {
     fetchTasksAction(fetchUrl, setTasks, setErrorMessage);
   }, [fetchUrl]);
@@ -57,19 +57,32 @@ const TaskContainer = ({ title, fetchUrl }) => {
     }));
   };
 
-  const handleEditSubmit = (e) => handleEditSubmitAction(e, editingTask, setTasks, setEditingTask);
+  const handleEditSubmit = (e) =>
+    handleEditSubmitAction(e, editingTask, setTasks, setEditingTask);
 
   const handleAddTask = () => {
     setShowAddTaskModal(true);
   };
 
-  const handleAddTaskSubmit = (taskData) => handleAddTaskSubmitAction(taskData, fetchTasks, setShowAddTaskModal, setErrorMessage);
+  const handleAddTaskSubmit = (taskData) =>
+    handleAddTaskSubmitAction(
+      taskData,
+      fetchTasks,
+      setShowAddTaskModal,
+      setErrorMessage
+    );
 
   const handleAddTaskCancel = () => {
     setShowAddTaskModal(false);
   };
 
-  const confirmDelete = () => confirmDeleteAction(taskToDelete, setTasks, setShowConfirmation, setTaskToDelete);
+  const confirmDelete = () =>
+    confirmDeleteAction(
+      taskToDelete,
+      setTasks,
+      setShowConfirmation,
+      setTaskToDelete
+    );
 
   const cancelDelete = () => {
     setTaskToDelete(null);
@@ -78,6 +91,7 @@ const TaskContainer = ({ title, fetchUrl }) => {
 
   return (
     <div className="flex flex-col p-4 mt-4">
+      
       <div className="flex justify-between items-center mb-8 mr-10">
         <h2 className="text-2xl font-bold">{title}</h2>
         <button
@@ -91,15 +105,31 @@ const TaskContainer = ({ title, fetchUrl }) => {
         tasks={tasks}
         fetchTasks={fetchTasks}
         onEditClick={handleEditClick}
-        onDeleteClick={(id) => handleDeleteAction(id, setTaskToDelete, setShowConfirmation)}
+        onDeleteClick={(id) =>
+          handleDeleteAction(id, setTaskToDelete, setShowConfirmation)
+        }
         calculateDaysRemaining={calculateDaysRemaining}
         dateOfTask={dateOfTask}
       />
-      {showConfirmation && <ConfirmationDialog onConfirm={confirmDelete} onCancel={cancelDelete} />}
-      {editingTask && (
-        <EditTaskModal task={editingTask} onChange={handleEditChange} onSubmit={handleEditSubmit} onCancel={() => setEditingTask(null)} />
+      {showConfirmation && (
+        <ConfirmationDialog onConfirm={confirmDelete} onCancel={cancelDelete} />
       )}
-      {showAddTaskModal && <AddTaskModal onSubmit={handleAddTaskSubmit} onCancel={handleAddTaskCancel} errorMessage={errorMessage} />}
+      {editingTask && (
+        <EditTaskModal
+          task={editingTask}
+          onChange={handleEditChange}
+          onSubmit={handleEditSubmit}
+          onCancel={() => setEditingTask(null)}
+        />
+      )}
+      {showAddTaskModal && (
+        <AddTaskModal
+          onSubmit={handleAddTaskSubmit}
+          onCancel={handleAddTaskCancel}
+          errorMessage={errorMessage}
+        />
+      )}
+      
     </div>
   );
 };
