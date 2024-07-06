@@ -12,7 +12,8 @@ const taskSchema = new mongoose.Schema({
     description: { type: String, required: true },
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     dueDate : {type:Date,required:true},
-    done: { type: Boolean, default: false }
+    done: { type: Boolean, default: false },
+    important : {type:Boolean }
 });
 
 const Task = mongoose.model('Task', taskSchema);

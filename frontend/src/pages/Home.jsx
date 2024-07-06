@@ -8,9 +8,9 @@ const Home = () => {
   const navigate = useNavigate();
 
   return (
-    <div className='flex'>
+    <div className='flex gap-5'>
       <Sidebar />
-      <div className='ml-10 md:ml-64 flex flex-col gap-5 p-5 w-full'>
+      <div className='flex flex-col gap-5 p-5 w-full'>
         <Heading />
       </div>
     </div>

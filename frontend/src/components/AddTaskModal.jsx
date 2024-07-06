@@ -3,11 +3,13 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { IoCalendarOutline } from "react-icons/io5";
 import "../App.css";
-const AddTaskModal = ({ onSubmit, onCancel,errorMessage }) => {
+
+const AddTaskModal = ({ onSubmit, onCancel, errorMessage }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [startDate, setStartDate] = useState(new Date());
-  
+  const [isImportant, setIsImportant] = useState(true);
+
   const handleDateChange = (date) => {
     setStartDate(date);
   };
@@ -18,6 +20,7 @@ const AddTaskModal = ({ onSubmit, onCancel,errorMessage }) => {
       title,
       description,
       dueDate: startDate,
+      important:isImportant,
     });
   };
 
@@ -39,12 +42,12 @@ const AddTaskModal = ({ onSubmit, onCancel,errorMessage }) => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
-      <div className=" w-[500px] h-[500px] backdrop-blur-3xl backdrop-brightness-50 p-8 rounded-lg shadow-lg">
+      <div className="w-[500px] h-[550px] backdrop-blur-3xl backdrop-brightness-50 p-8 rounded-lg shadow-lg">
         <h2 className="text-2xl font-bold mb-10 text-white">Add New Task</h2>
         {errorMessage && (
-              <div className="mb-4 text-md font-bold text-red-400 ml-7">
-                {errorMessage}
-              </div>
+          <div className="mb-4 text-md font-bold text-red-400 ml-7">
+            {errorMessage}
+          </div>
         )}
         <form onSubmit={handleSubmit} className="max-w-xs mx-auto">
           {/* Title */}
@@ -123,6 +126,37 @@ const AddTaskModal = ({ onSubmit, onCancel,errorMessage }) => {
               className="block w-full py-3 px-3 text-sm text-gray-900 bg-transparent border-b border-black dark:text-white dark:border-gray-600 focus:outline-none focus:border-blue-500"
               wrapperClassName="w-full mt-5" // Ensure the DatePicker wrapper inherits correct width
             />
+          </div>
+
+          {/* Importance */}
+          <div className="mb-6 relative">
+            <label className="block text-sm text-gray-600 dark:text-gray-300 mb-2">
+              Importance
+            </label>
+            <div className="flex items-center">
+              <label className="flex items-center mr-4 text-white">
+                <input
+                  type="radio"
+                  value="important"
+                  name="Importance"
+                  checked = {isImportant}
+                  onChange={() => setIsImportant(true)}
+                  className="mr-2"
+                />
+                Important
+              </label>
+              <label className="flex items-center text-white">
+                <input
+                  type="radio"
+                  value="not-important"
+                  name="Importance"
+                  checked = {!isImportant}
+                  onChange={() => setIsImportant(false)}
+                  className="mr-2"
+                />
+                Not Important
+              </label>
+            </div>
           </div>
 
           {/* Buttons */}

@@ -22,6 +22,41 @@ router.get("/alltask", authMiddleware, async (req, res) => {
   }
 });
 
+router.get("/pending", authMiddleware, async (req, res) => {
+  try {
+    const tasks = await Task.find(
+      { userId: req.userId , done:false },
+      "title description dueDate"
+    );
+    res.json(tasks);
+  } catch (error) {
+    res.status(500).json({ msg: "Error fetching tasks", error: error.message });
+  }
+});
+router.get("/completed", authMiddleware, async (req, res) => {
+  try {
+    const tasks = await Task.find(
+      { userId: req.userId , done:true },
+      "title description dueDate"
+    );
+    res.json(tasks);
+  } catch (error) {
+    res.status(500).json({ msg: "Error fetching tasks", error: error.message });
+  }
+});
+
+router.get("/important", authMiddleware, async (req, res) => {
+  try {
+    const tasks = await Task.find(
+      { userId: req.userId , important:true },
+      "title description dueDate"
+    );
+    res.json(tasks);
+  } catch (error) {
+    res.status(500).json({ msg: "Error fetching tasks", error: error.message });
+  }
+});
+
 router.get("/edit/:id",authMiddleware,async(req,res)=>{
     const task = await Task.findById(req.params.id,"title description dueDate");
     res.json(task);
@@ -67,6 +102,19 @@ router.get("/numberoftasks", authMiddleware, async (req, res) => {
   }
 });
 
+router.patch('/mark-done/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+      const updatedTask = await Task.findByIdAndUpdate(id, { done: true }, { new: true });
+      res.json(updatedTask);
+  } catch (err) {
+      console.error('Error marking task as done:', err);
+      res.status(500).json({ msg: 'Internal server error' });
+  }
+});
+  
+
 router.post("/newtask", authMiddleware, async (req, res) => {
   const body = req.body;
   const { success } = taskSchema.safeParse(body);
@@ -77,13 +125,17 @@ router.post("/newtask", authMiddleware, async (req, res) => {
   const description = req.body.description;
   const userId = req.userId;
   const dueDate = req.body.dueDate;
-  if (title && description && userId && dueDate) {
+  const done = req.body.done;
+  const important = req.body.important;
+  if (title && description && userId && dueDate ) {
     try {
       const newTask = await Task.create({
         title,
         description,
         userId,
         dueDate,
+        done,
+        important
       });
       const taskId = newTask._id;
 

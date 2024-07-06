@@ -8,9 +8,11 @@ import Login from "./pages/Signin";
 import Home from "./pages/Home";
 
 import ProtectedRoute from "./ProtectedRoute";
-import './App.css'
+import "./App.css";
 import Tasks from "./pages/Tasks";
-
+import PendingTasks from "./pages/PendingTasks";
+import CompletedTasks from "./pages/CompletedTasks";
+import ImportantTasks from "./pages/ImportantTasks";
 
 const App = () => {
   return (
@@ -29,12 +31,38 @@ const App = () => {
                 </ProtectedRoute>
               }
             />
-               
+
             <Route
               path="/alltask"
               element={
                 <ProtectedRoute>
                   <Tasks></Tasks>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/pending"
+              element={
+                <ProtectedRoute>
+                  <PendingTasks></PendingTasks>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/completed"
+              element={
+                <ProtectedRoute>
+                  <CompletedTasks></CompletedTasks>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/important"
+              element={
+                <ProtectedRoute>
+                  <ImportantTasks></ImportantTasks>
                 </ProtectedRoute>
               }
             />
