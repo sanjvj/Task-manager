@@ -9,7 +9,7 @@ import Home from './pages/Home';
 import ProtectedRoute from './ProtectedRoute';
 import './App.css';
 import Tasks from './pages/Tasks';
-import PendingTasks from './pages/PendingTasks';
+
 import CompletedTasks from './pages/CompletedTasks';
 import ImportantTasks from './pages/ImportantTasks';
 import ProgressBar from './components/ProgressBar'; // Import ProgressBar component
@@ -39,14 +39,7 @@ const App = () => {
                 </ProtectedRoute>
               }
             />
-            <Route
-              path="/pending"
-              element={
-                <ProtectedRoute>
-                  <PendingTasks />
-                </ProtectedRoute>
-              }
-            />
+            
             <Route
               path="/completed"
               element={

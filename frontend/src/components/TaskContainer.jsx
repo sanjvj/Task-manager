@@ -18,7 +18,7 @@ const TaskContainer = ({ title, fetchUrl }) => {
   const [editingTask, setEditingTask] = useState(null);
   const [showAddTaskModal, setShowAddTaskModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [loading,setLoading] = useState(false);
+  
   const fetchTasks = useCallback(() => {
     fetchTasksAction(fetchUrl, setTasks, setErrorMessage);
   }, [fetchUrl]);

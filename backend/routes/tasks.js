@@ -84,35 +84,55 @@ router.put('/edit/:id', authMiddleware, async (req, res) => {
     }
   });
 
-router.get("/numberoftasks", authMiddleware, async (req, res) => {
-  try {
-    const totaltask = await Task.countDocuments({ userId: req.userId });
-    const completedtask = await Task.countDocuments({
-      userId: req.userID,
-      done: true,
-    });
-    res.json({
-      totaltask,
-      completedtask,
-    });
-  } catch (error) {
-    res
-      .status(500)
-      .json({ msg: "Error fetching number of tasks", error: error.message });
-  }
-});
+  router.get("/numberoftasks", authMiddleware, async (req, res) => {
+    try {
+      const startOfToday = new Date();
+      startOfToday.setHours(0, 0, 0, 0);
+  
+      const totaltask = await Task.countDocuments({ userId: req.userId });
+      const completedtask = await Task.countDocuments({
+        userId: req.userId,
+        done: true,
+      });
+      const importanttask = await Task.countDocuments({
+        userId: req.userId,
+        important: true,
+      });
+      const overduetask = await Task.countDocuments({
+        userId: req.userId,
+        dueDate: { $lt: startOfToday }, 
+      });
+  
+      res.json({
+        totaltask,
+        completedtask,
+        importanttask,
+        overduetask,
+      });
+    } catch (error) {
+      res
+        .status(500)
+        .json({ msg: "Error fetching number of tasks", error: error.message });
+    }
+  });
+  
 
 router.patch('/mark-done/:id', async (req, res) => {
   const { id } = req.params;
 
   try {
-      const updatedTask = await Task.findByIdAndUpdate(id, { done: true });
-      res.json(updatedTask);
+    
+    const task = await Task.findById(id);
+    task.done = !task.done;
+    const updatedTask = await task.save();
+
+    res.json(updatedTask);
   } catch (err) {
-      console.error('Error marking task as done:', err);
-      res.status(500).json({ msg: 'Internal server error' });
+    console.error('Error toggling task status:', err);
+    res.status(500).json({ msg: 'Internal server error' });
   }
 });
+
   
 
 router.post("/newtask", authMiddleware, async (req, res) => {

@@ -23,8 +23,8 @@ const Sidebar = () => {
     </div>
       <div className="flex items-center gap-2">
       <img src="Logo.jpeg" className="w-12 h-12 rounded-md"></img>
-        <div><h1 className="text-lg font-normal">TASKSWIFT</h1>
-        <p className="font-light text-zinc-400 text-sm">Company</p></div>
+        <div><h1 className="text-lg font-normal">FINALIZE</h1>
+        <p className="font-light text-zinc-400 text-sm">The Day</p></div>
       </div>
       <div className="flex flex-col mt-16 gap-2">
         <button onClick={() => navigate("/home")} className="flex gap-3 text-start text-zinc-200 hover:bg-neutral-500 py-2 px-4 rounded-md transition duration-500">
@@ -36,9 +36,7 @@ const Sidebar = () => {
         <button onClick={() => navigate("/completed")} className="flex gap-3 text-start text-zinc-200 hover:bg-neutral-500 py-2 px-4 rounded-md transition duration-500">
           <><SiTicktick stroke="1" className="mt-1"/> Completed</>
         </button>
-        <button onClick={() => navigate("/pending")} className="flex gap-3 text-start text-zinc-200 hover:bg-neutral-500 py-2 px-3 rounded-md transition duration-500">
-          <><MdOutlinePendingActions size="20" className="mt-1"/> Pending</>
-        </button>
+        
         <button onClick={() => navigate("/important")} className="flex gap-3 text-start text-zinc-200 hover:bg-neutral-500 py-2 px-3 rounded-md transition duration-500">
           <><MdOutlineNotificationImportant size='18' className="mt-1"/> Important</>
         </button>
